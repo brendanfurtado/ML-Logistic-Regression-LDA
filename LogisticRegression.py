@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
+
 
 # Logistic regression model
 # P(y=1|x)=1/(1+e^-a)
@@ -58,14 +58,12 @@ class LogisticRegression:
     # w=w'-(learning rate)*gradient of error function
     # gradient descent step
     def fit(self, X, y, learning_rate=0.001, iteration=50000):
-        difference = 1.0
-        min_difference = 0.1  # difference between w and w'
+
         iteration_counter = 0
         cross_en = []
-        costList = []
+        costList = [] #Will be used for graphing iterations vs cost
 
         while iteration_counter <= iteration:
-           # and difference >= min_difference:
             gradient = self.gradient_cross_entropy(X, y)
             cost = self.cross_entropy(X, y)
             store_w = self.w
@@ -73,7 +71,6 @@ class LogisticRegression:
             self.w = store_w - learning_rate * gradient  # making parameters
             cross_en.append(cost)
             costList.append(cost)
-            #difference = np.sum(list(self.w - store_w))
             iteration_counter = iteration_counter + 1
 
 
@@ -106,3 +103,4 @@ class LogisticRegression:
 
             differences = np.subtract(y, prediction_y)
             return (len(differences) - np.sum(np.abs(differences))) / len(differences)
+

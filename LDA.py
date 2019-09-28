@@ -26,7 +26,7 @@ class LDA:
         for i in range(len(X)):
             sum_class1 += np.array(X[i])
 
-        return sum_class1.T / len(X)
+        return sum_class1 / len(X)
 
 
     # Mu0, if object from class0 contains feature xi, then i=1; 0 otherwise
@@ -35,7 +35,7 @@ class LDA:
         for i in range(len(X)):
             sum_class0 += np.array(X[i])
 
-        return sum_class0.T / len(X)
+        return sum_class0 / len(X)
 
 
     # when class0
@@ -85,9 +85,13 @@ class LDA:
         class1 = np.array(class1)
         class0 = np.array(class0)
 
-        ratio = np.log(self.probability_c1(len(class0), len(class1))/self.probability_c0(len(class0), len(class1)))
+        y1 = self.probability_c1(len(class0), len(class1))
+        y0 = self.probability_c0(len(class0), len(class1))
+        ratio = np.log(y1 / y0)
         mu1 = self.mean_c1(class1)
+        mu1 = mu1.T
         mu0 = self.mean_c0(class0)
+        mu0 = mu0.T
 
         covar = self.covariance(class1, class0)
         in_covar = np.linalg.pinv(covar)
@@ -123,44 +127,3 @@ class LDA:
 
             differences = np.subtract(y, prediction_y)
             return (len(differences) - np.sum(np.abs(differences))) / len(differences)
-
-wine_df = pd.read_csv("winequality-red.csv", delimiter=";")
-wine_df["quality_modified"] = pd.to_numeric((wine_df["quality"] > 5) & (wine_df["quality"] < 11)).astype(int)
-
-# Standardize Data
-for column in wine_df.columns[0:11]:
-    wine_df[column] = (wine_df[column] - wine_df[column].mean()) / wine_df[column].std()
-
-# comparison_df = wine_df.groupby("quality_modified").mean()
-# comparison_df.T.plot(kind="bar")
-# plt.show()
-
-# scatter_matrix(wine_df, alpha=0.3)
-# plt.show()
-lda = LDA()
-
-wine_df.insert(0, "Constant", 1)
-
-wine_df_copy = wine_df.copy()
-wine_df_copy = wine_df_copy.drop(columns=["quality"])
-
-X = wine_df[wine_df.columns[0:12]]
-y = wine_df["quality_modified"]
-
-def k_fold_CV(data, model, k):
-
-    all_data = data.iloc[np.random.permutation(len(data))]
-    data_split = np.array_split(data, k)
-    accuracies = np.ones(k)
-
-    for i, data in enumerate(data_split):
-
-        training_data = pd.concat([all_data, data_split[i], data_split[i]]).drop_duplicates(keep=False)
-        model.fit(training_data[training_data.columns[0:12]], np.array(training_data[training_data.columns[12]]))
-        prediction = model.predict(data_split[i][data_split[i].columns[0:12]], np.array(data_split[i][data_split[i].columns[12]]))
-        accuracies[i] = model.evaluate_acc(data_split[i][data_split[i].columns[12]], prediction)
-
-    return np.mean(accuracies)
-
-
-print(k_fold_CV(wine_df_copy, lda, 5))

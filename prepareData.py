@@ -22,6 +22,11 @@ def scrubData(dataframe):
     dataframe = dataframe.drop([23, 40, 139, 145, 158, 164, 235, 249, 275, 292, 294, 297, 315,
                                 321, 411, 617], axis=0)
 
+    #Classifying the tumors (benign and malignant) as 0 and 1 respectively
+    #And converting an object row to numerical
+    dataframe['class_modified'] = pd.to_numeric((dataframe['Class'] == 4)).astype(int)
+    dataframe['Bare_Nuclei'] = pd.to_numeric(dataframe['Bare_Nuclei']).astype(int)
+
     # Count of rows should reduce to 683 rows
     return dataframe
 
