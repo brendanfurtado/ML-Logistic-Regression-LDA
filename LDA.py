@@ -1,7 +1,5 @@
 import numpy as np
 import pandas as pd
-import scipy as sp
-import matplotlib.pyplot as mp
 
 # Linear discriminant analysis model
 # Compute log-odds ratio
@@ -127,3 +125,40 @@ class LDA:
 
             differences = np.subtract(y, prediction_y)
             return (len(differences) - np.sum(np.abs(differences))) / len(differences)
+
+
+    def confusion_matrix(self, y, prediction_y):
+        matrix = np.zeros(shape=(2, 2))
+        y = np.array(y)
+        prediction_y = np.array(prediction_y)
+
+        for i in range(len(prediction_y)):
+            if y[i] == 1:
+                if prediction_y[i] != 1:
+                    matrix[0][1] = matrix[0][1] + 1
+                else:
+                    matrix[0][0] = matrix[0][0] + 1
+            elif y[i] == 0:
+                if prediction_y[i] != 0:
+                    matrix[1][0] = matrix[1][0] + 1
+                else:
+                    matrix[1][1] = matrix[1][1] + 1
+
+        return matrix
+
+def k_fold_CV(data, model, k):
+
+    all_data = data.iloc[np.random.permutation(len(data))]
+    data_split = np.array_split(data, k)
+    accuracies = np.ones(k)
+    matrix = np.zeros(shape=(2, 2))
+
+    for i, data in enumerate(data_split):
+
+        training_data = pd.concat([all_data, data_split[i], data_split[i]]).drop_duplicates(keep=False)
+        model.fit(training_data[training_data.columns[0:len(data.columns)-1]], np.array(training_data[training_data.columns[len(data.columns)-1]]))
+        prediction = model.predict(data_split[i][data_split[i].columns[0:len(data.columns)-1]], np.array(data_split[i][data_split[i].columns[len(data.columns)-1]]))
+        accuracies[i] = model.evaluate_acc(data_split[i][data_split[i].columns[len(data.columns) - 1]], prediction)
+        matrix += model.confusion_matrix(data_split[i][data_split[i].columns[len(data.columns) - 1]], prediction)
+
+    return np.mean(accuracies), matrix

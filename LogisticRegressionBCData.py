@@ -1,5 +1,5 @@
 from prepareData import *
-from LogisticRegression import *
+from LR import *
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -70,26 +70,26 @@ def k_fold_CV(data, model, k, learning_rate, iteration):
 #This part of the code changes to output different graphs, based on different alpha values
 
 #Testing different learning rates
-# alpha1 = .0005
-# start_time = time.time()
-#
-#
-# results1 = k_fold_CV(df_copy, lr_BC, 5, alpha1, 10)
-# print(results1[0]) #Accuracy
-# end_time = time.time()
-# print("Elapsed time for Logistic Regression on the Breast Cancer set was %g seconds" % (end_time-start_time)) #result 1: 51.5082 seconds, result 2: 51.0199 seconds
-#
-#
-# costList1 = results1[1]
-#
-# # Visualizing number of iterations vs Cost
-# plt.plot(costList1, '-y', label='a = ' + str(alpha1))
-# plt.xlabel("Iterations")
-# plt.ylabel("Cost")
-# plt.title("Number of Iterations vs Cost")
-# plt.legend(loc='upper right')
-# plt.tight_layout()
-# plt.show()
+alpha1 = .0005
+start_time = time.time()
+
+
+results1 = k_fold_CV(df_copy, lr_BC, 5, alpha1, 10)
+print(results1[0]) #Accuracy
+end_time = time.time()
+print("Elapsed time for Logistic Regression on the Breast Cancer set was %g seconds" % (end_time-start_time)) #result 1: 51.5082 seconds, result 2: 51.0199 seconds
+
+
+costList1 = results1[1]
+
+# Visualizing number of iterations vs Cost
+plt.plot(costList1, '-y', label='a = ' + str(alpha1))
+plt.xlabel("Iterations")
+plt.ylabel("Cost")
+plt.title("Number of Iterations vs Cost")
+plt.legend(loc='upper right')
+plt.tight_layout()
+plt.show()
 
 
 
@@ -137,36 +137,35 @@ print("The average time for 5-fold cross validation was %g seconds" % ((end_time
 
 
 #Code to plot learning rate vs time to run
-# times = [0,0,0,0,0,0,0]
-# start = time.time()
-# print(k_fold_CV(df_copy, lr_BC, 5, 0.00001, 10)) # 0.9692786603692571
-# times[0] = time.time() - start
-# start = time.time()
-# print(k_fold_CV(df_copy, lr_BC, 5, 0.0001, 10)) # 0.9692786603692571
-# times[1] = time.time() - start
-# start = time.time()
-# print(k_fold_CV(df_copy, lr_BC, 5, 0.001, 10)) # 0.9707492486045514
-# times[2] = time.time() - start
-# start = time.time()
-# print(k_fold_CV(df_copy, lr_BC, 5, 0.01, 10)) # 0.9707707170459425
-# times[3] = time.time() - start
-# start = time.time()
-# print(k_fold_CV(df_copy, lr_BC, 5, 0.05, 10)) # 0.9678510090167454
-# times[4] = time.time() - start
-# start = time.time()
-# print(k_fold_CV(df_copy, lr_BC, 5, 0.1, 10)) # 0.9634714469729498
-# times[5] = time.time() - start
-# start = time.time()
-# print(k_fold_CV(df_copy, lr_BC, 5, 0.5, 10)) # 0.9692571919278661
-# times[6] = time.time() - start
-#
-# learning_rates = [0.00001, 0.0001, 0.001, 0.01, 0.05, 0.1, 0.5]
-# #times = [56.67494606971741, 58.5338819026947, 60.11971831321716, 58.255337953567505, 55.337260007858276, 49.810872077941895, 44.955501079559326]
-# plt.plot(learning_rates, times, 'o')
-# plt.xscale("log")
-# plt.xlabel("log(Learning Rate)")
-# plt.ylabel("Time (seconds)")
-# plt.show()
+times = [0,0,0,0,0,0,0]
+start = time.time()
+print(k_fold_CV(df_copy, lr_BC, 5, 0.00001, 10)) # 0.9692786603692571
+times[0] = time.time() - start
+start = time.time()
+print(k_fold_CV(df_copy, lr_BC, 5, 0.0001, 10)) # 0.9692786603692571
+times[1] = time.time() - start
+start = time.time()
+print(k_fold_CV(df_copy, lr_BC, 5, 0.001, 10)) # 0.9707492486045514
+times[2] = time.time() - start
+start = time.time()
+print(k_fold_CV(df_copy, lr_BC, 5, 0.01, 10)) # 0.9707707170459425
+times[3] = time.time() - start
+start = time.time()
+print(k_fold_CV(df_copy, lr_BC, 5, 0.05, 10)) # 0.9678510090167454
+times[4] = time.time() - start
+start = time.time()
+print(k_fold_CV(df_copy, lr_BC, 5, 0.1, 10)) # 0.9634714469729498
+times[5] = time.time() - start
+start = time.time()
+print(k_fold_CV(df_copy, lr_BC, 5, 0.5, 10)) # 0.9692571919278661
+times[6] = time.time() - start
+
+learning_rates = [0.00001, 0.0001, 0.001, 0.01, 0.05, 0.1, 0.5]
+plt.plot(learning_rates, times, 'o')
+plt.xscale("log")
+plt.xlabel("log(Learning Rate)")
+plt.ylabel("Time (seconds)")
+plt.show()
 
 
 
